@@ -6,9 +6,9 @@ namespace TaskManagementApi.Features.Users.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetByIdAsync(Guid id);
-        Task<User?> GetByUsernameAsync(string username);
-        Task<User> AddAsync(User user);
+        Task<UserEntity?> GetByIdAsync(Guid id);
+        Task<UserEntity?> GetByUsernameAsync(string username);
+        Task<UserEntity> AddAsync(UserEntity user);
         Task<bool> ExistsAsync(Guid id);
         Task<bool> UsernameExistsAsync(string username);
     }

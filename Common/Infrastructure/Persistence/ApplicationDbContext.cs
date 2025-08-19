@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskEntity = TaskManagementApi.Features.Tasks.Domain.Entities.TaskEntity;
 using TaskManagementApi.Features.Users.Domain.Entities;
+using TaskManagementApi.Features.Tasks.Infrastructure.Persistence;
+using TaskManagementApi.Features.Users.Infrastructure.Persistence;
 
 namespace TaskManagementApi.Common.Infrastructure.Persistence
 {
@@ -12,59 +14,15 @@ namespace TaskManagementApi.Common.Infrastructure.Persistence
         }
 
         public DbSet<TaskEntity> Tasks { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Task entity configuration
-            modelBuilder.Entity<TaskEntity>(entity =>
-            {
-                entity.HasKey(t => t.Id);
-
-                entity.Property(t => t.Title)
-                    .IsRequired()
-                    .HasMaxLength(200);
-
-                entity.Property(t => t.Description)
-                    .HasMaxLength(1000);
-
-                entity.Property(t => t.IsCompleted)
-                    .IsRequired();
-
-                entity.Property(t => t.CreatedAtUtc)
-                    .IsRequired();
-
-                entity.Property(t => t.UpdatedAtUtc)
-                    .IsRequired();
-
-                entity.HasIndex(t => t.IsCompleted);
-                entity.HasIndex(t => t.DueDate);
-            });
-
-            // User entity configuration
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(u => u.Id);
-
-                entity.Property(u => u.Username)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(u => u.PasswordHash)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.Property(u => u.CreatedAtUtc)
-                    .IsRequired();
-
-                entity.Property(u => u.UpdatedAtUtc)
-                    .IsRequired();
-
-                entity.HasIndex(u => u.Username)
-                    .IsUnique();
-            });
+            // Apply entity configurations from each feature
+            modelBuilder.ApplyConfiguration(new TaskEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         }
     }
 }

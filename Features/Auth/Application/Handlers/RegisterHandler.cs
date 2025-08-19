@@ -31,7 +31,7 @@ namespace TaskManagementApi.Features.Auth.Application.Handlers
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             // Create new user
-            var user = new User(request.Username, passwordHash);
+            var user = new UserEntity(request.Username, passwordHash);
             await _userRepository.AddAsync(user);
 
             // Generate JWT token

@@ -2,7 +2,7 @@ using System;
 
 namespace TaskManagementApi.Features.Users.Domain.Entities
 {
-    public class User
+    public class UserEntity
     {
         public Guid Id { get; private set; }
         public string Username { get; private set; }
@@ -11,10 +11,10 @@ namespace TaskManagementApi.Features.Users.Domain.Entities
         public DateTime UpdatedAtUtc { get; private set; }
 
         // EF Core constructor
-        protected User() { }
+        protected UserEntity() { }
 
         // Domain constructor
-        public User(string username, string passwordHash)
+        public UserEntity(string username, string passwordHash)
         {
             Id = Guid.NewGuid();
             SetUsername(username);

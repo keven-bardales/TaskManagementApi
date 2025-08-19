@@ -122,9 +122,11 @@ Used repository pattern to:
 - **Future Flexibility**: Can switch data providers without changing business logic
 
 ### Domain-Driven Design
-- **Rich Domain Models**: The Task entity encapsulates business logic (not just data)
+- **Rich Domain Models**: TaskEntity and UserEntity encapsulate business logic (not just data)
 - **Private Setters**: Ensures data integrity through controlled methods
 - **Domain Validation**: Business rules are enforced at the domain level
+- **Feature-Specific Configurations**: Each feature manages its own entity configuration
+- **Consistent Naming**: All entities follow the *Entity naming convention
 
 ## 🛠️ Technologies & Libraries Used
 
@@ -150,15 +152,19 @@ TaskManagementApi/
 │   ├── Tasks/             # Task management feature
 │   │   ├── Api/           # Controllers & DTOs
 │   │   ├── Application/   # Business logic & handlers
-│   │   ├── Domain/        # Entities & interfaces
-│   │   └── Infrastructure/# Repository implementation
+│   │   ├── Domain/        # TaskEntity & interfaces
+│   │   └── Infrastructure/
+│   │       ├── Persistence/# TaskEntityConfiguration
+│   │       └── Repositories/# TaskRepository
 │   └── Users/             # User management feature
-│       ├── Domain/        # User entity & interfaces
-│       └── Infrastructure/# User repository
+│       ├── Domain/        # UserEntity & interfaces
+│       └── Infrastructure/
+│           ├── Persistence/# UserEntityConfiguration
+│           └── Repositories/# UserRepository
 ├── Common/                # Shared infrastructure
 │   └── Infrastructure/
 │       ├── Authentication/# JWT service
-│       └── Persistence/   # DbContext
+│       └── Persistence/   # ApplicationDbContext
 └── Program.cs            # Application configuration
 ```
 
@@ -191,6 +197,12 @@ TaskManagementApi/
 
 7. **No Caching**: Frequently accessed data isn't cached
    - Could implement caching for better performance
+
+8. **Security Configuration**: JWT secrets and other sensitive data in appsettings.json
+   - Should use appsettings.json only as an example template
+   - Actual secrets should be in appsettings.Development.json (gitignored)
+   - Production should use Azure Key Vault, environment variables, or similar
+   - Current approach exposes JWT key in source control (not production-safe)
 
 ### Why These Weren't Implemented
 Given the 3-hour time constraint, I prioritized:

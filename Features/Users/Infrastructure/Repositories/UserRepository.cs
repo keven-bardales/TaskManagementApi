@@ -16,17 +16,17 @@ namespace TaskManagementApi.Features.Users.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<User?> GetByIdAsync(Guid id)
+        public async Task<UserEntity?> GetByIdAsync(Guid id)
         {
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User?> GetByUsernameAsync(string username)
+        public async Task<UserEntity?> GetByUsernameAsync(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<User> AddAsync(User user)
+        public async Task<UserEntity> AddAsync(UserEntity user)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
