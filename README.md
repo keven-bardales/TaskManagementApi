@@ -276,11 +276,12 @@ With additional time, I would add:
 1. Comprehensive error handling middleware
 2. Request/response logging
 3. Integration tests
-4. JWT authentication implementation
+4. Proper secrets management (appsettings.example.json + gitignored appsettings.Development.json)
 5. User context for multi-tenant support
 6. API versioning
 7. Health checks endpoint
 8. Docker support
+9. Environment-specific configuration management
 
 ---
 
