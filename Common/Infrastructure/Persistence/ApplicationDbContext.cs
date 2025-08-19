@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskEntity = TaskManagementApi.Features.Tasks.Domain.Entities.TaskEntity;
+using TaskManagementApi.Features.Users.Domain.Entities;
 
 namespace TaskManagementApi.Common.Infrastructure.Persistence
 {
@@ -11,6 +12,7 @@ namespace TaskManagementApi.Common.Infrastructure.Persistence
         }
 
         public DbSet<TaskEntity> Tasks { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +41,29 @@ namespace TaskManagementApi.Common.Infrastructure.Persistence
 
                 entity.HasIndex(t => t.IsCompleted);
                 entity.HasIndex(t => t.DueDate);
+            });
+
+            // User entity configuration
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+
+                entity.Property(u => u.Username)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(u => u.PasswordHash)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(u => u.CreatedAtUtc)
+                    .IsRequired();
+
+                entity.Property(u => u.UpdatedAtUtc)
+                    .IsRequired();
+
+                entity.HasIndex(u => u.Username)
+                    .IsUnique();
             });
         }
     }

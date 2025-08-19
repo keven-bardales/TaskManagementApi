@@ -38,6 +38,13 @@ A RESTful API for task management built with .NET 8, demonstrating clean archite
 
 ## 📋 API Endpoints
 
+### Authentication Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/login` | Login and get JWT token |
+
+### Task Endpoints (🔒 Authentication Required)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/tasks` | Get all tasks with optional filters |
@@ -54,9 +61,28 @@ A RESTful API for task management built with .NET 8, demonstrating clean archite
 
 ### Sample Requests
 
-**Create Task:**
+**Register User:**
+```json
+POST /api/auth/register
+{
+  "username": "john_doe",
+  "password": "password123"
+}
+```
+
+**Login:**
+```json
+POST /api/auth/login
+{
+  "username": "john_doe",
+  "password": "password123"
+}
+```
+
+**Create Task (requires JWT token in Authorization header):**
 ```json
 POST /api/tasks
+Headers: Authorization: Bearer {jwt_token}
 {
   "title": "Complete project",
   "description": "Finish the API implementation",
@@ -67,6 +93,7 @@ POST /api/tasks
 **Partial Update:**
 ```json
 PATCH /api/tasks/{id}
+Headers: Authorization: Bearer {jwt_token}
 {
   "isCompleted": true
 }
@@ -106,22 +133,31 @@ Used repository pattern to:
 | .NET | 8.0 | Framework |
 | Entity Framework Core | 8.0.x | ORM for data persistence |
 | MediatR | 13.0.0 | CQRS implementation |
-| FluentValidation | 11.x | Request validation |
+| FluentValidation | 12.0.0 | Request validation |
 | SQLite | 8.0.x | Database provider |
 | Swashbuckle.AspNetCore | 6.x | Swagger/OpenAPI documentation |
+| JWT Bearer Authentication | 8.0.x | JWT token authentication |
+| BCrypt.Net-Next | 4.0.3 | Password hashing |
 
 ## 📁 Project Structure
 
 ```
 TaskManagementApi/
 ├── Features/               # Feature-based organization
-│   └── Tasks/             
-│       ├── Api/           # Controllers & DTOs
-│       ├── Application/   # Business logic & handlers
-│       ├── Domain/        # Entities & interfaces
-│       └── Infrastructure/# Repository implementation
+│   ├── Auth/              # Authentication feature
+│   │   ├── Api/           # Auth controllers & DTOs  
+│   │   └── Application/   # Auth commands & handlers
+│   ├── Tasks/             # Task management feature
+│   │   ├── Api/           # Controllers & DTOs
+│   │   ├── Application/   # Business logic & handlers
+│   │   ├── Domain/        # Entities & interfaces
+│   │   └── Infrastructure/# Repository implementation
+│   └── Users/             # User management feature
+│       ├── Domain/        # User entity & interfaces
+│       └── Infrastructure/# User repository
 ├── Common/                # Shared infrastructure
 │   └── Infrastructure/
+│       ├── Authentication/# JWT service
 │       └── Persistence/   # DbContext
 └── Program.cs            # Application configuration
 ```
@@ -185,14 +221,34 @@ This inside-out approach ensures:
 - ✅ **REST Principles**: Proper HTTP verbs, status codes, resource-based URLs
 - ✅ **Persistence**: SQLite with Entity Framework Core
 - ✅ **Documentation**: Swagger UI for API testing
-- ⏳ **JWT Authentication**: Structure ready in Common/Infrastructure/Authentication (not implemented due to time)
+- ✅ **JWT Authentication**: Full implementation with user registration/login and secured endpoints
 
 ## 🚦 Testing the API
 
-1. Run the application
-2. Open browser at `https://localhost:[port]/`
-3. Use Swagger UI to test all endpoints
-4. Database file (tasks.db) will be created in project root
+### Basic Testing Flow
+
+1. **Run the application**
+   ```bash
+   dotnet run
+   ```
+
+2. **Open Swagger UI**
+   - Navigate to `https://localhost:[port]/` (port shown in console)
+   - The database file (tasks.db) will be created automatically
+
+3. **Test Authentication**
+   1. Use `/api/auth/register` to create a new user
+   2. Use `/api/auth/login` to get a JWT token
+   3. Copy the token from the response
+
+4. **Authenticate in Swagger**
+   1. Click the "Authorize" button in Swagger UI
+   2. Enter: `Bearer {your-jwt-token}`
+   3. Click "Authorize"
+
+5. **Test Task Endpoints**
+   - All `/api/tasks/*` endpoints now require authentication
+   - Use the secured endpoints to manage tasks
 
 ## 📝 Notes on Code Quality
 
